@@ -1,0 +1,1058 @@
+openapi: 3.0.3
+info:
+  title: Charity API
+  version: 1.0.0
+  description: Сборы по любому случаю
+paths:
+  /api/auth/token/login/:
+    post:
+      operationId: api_auth_token_login_create
+      description: Use this endpoint to obtain user authentication token.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCreate'
+          description: ''
+  /api/auth/token/logout/:
+    post:
+      operationId: api_auth_token_logout_create
+      description: Use this endpoint to logout user (remove user authentication token).
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/collect/:
+    get:
+      operationId: api_collect_list
+      description: Авторизованные пользователи могут создавать, все пользователи могут
+        видеть
+      summary: Получить список сборов
+      tags:
+      - Сбор средств
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collect'
+          description: ''
+    post:
+      operationId: api_collect_create
+      description: Авторизованные пользователи могут создавать, все пользователи могут
+        видеть
+      summary: Создать сбор
+      tags:
+      - Сбор средств
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Collect'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Collect'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Collect'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collect'
+          description: ''
+  /api/collect/{collect_id}/payment/:
+    get:
+      operationId: api_collect_payment_list
+      description: Все пользователи могут видеть и создать пожертвования
+      summary: Получить список пожертвований
+      parameters:
+      - in: path
+        name: collect_id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - Сделание пожертвование
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+          description: ''
+    post:
+      operationId: api_collect_payment_create
+      description: Все пользователи могут видеть и создать пожертвования
+      summary: Сделать пожертвование
+      parameters:
+      - in: path
+        name: collect_id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - Сделание пожертвование
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Payment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Payment'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
+  /api/collect/{collect_id}/payment/{id}/:
+    get:
+      operationId: api_collect_payment_retrieve
+      description: Все пользователи могут видеть и создать пожертвования
+      summary: Детальная информация о пожертвовании
+      parameters:
+      - in: path
+        name: collect_id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Сделание пожертвование
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
+  /api/collect/{id}/:
+    get:
+      operationId: api_collect_retrieve
+      description: Авторизованные пользователи могут создавать, все пользователи могут
+        видеть
+      summary: Детальная информация о сборе
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Сбор.
+        required: true
+      tags:
+      - Сбор средств
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collect'
+          description: ''
+    put:
+      operationId: api_collect_update
+      description: Авторизованные пользователи могут создавать, все пользователи могут
+        видеть
+      summary: Обновить сбор
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Сбор.
+        required: true
+      tags:
+      - Сбор средств
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Collect'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Collect'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Collect'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collect'
+          description: ''
+    patch:
+      operationId: api_collect_partial_update
+      description: Авторизованные пользователи могут создавать, все пользователи могут
+        видеть
+      summary: Частичное обновление сбора
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Сбор.
+        required: true
+      tags:
+      - Сбор средств
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCollect'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCollect'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCollect'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collect'
+          description: ''
+    delete:
+      operationId: api_collect_destroy
+      description: Авторизованные пользователи могут создавать, все пользователи могут
+        видеть
+      summary: Удалить сбор
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Сбор.
+        required: true
+      tags:
+      - Сбор средств
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/:
+    get:
+      operationId: api_users_list
+      description: Авторизованный пользователь
+      summary: Получить список пользователей
+      tags:
+      - Пользователь
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: api_users_create
+      description: Авторизованный пользователь
+      summary: Создать пользователя
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreate'
+          description: ''
+  /api/users/{id}/:
+    get:
+      operationId: api_users_retrieve
+      description: Авторизованный пользователь
+      summary: Детальная информация о пользователе
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this пользователь.
+        required: true
+      tags:
+      - Пользователь
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_users_update
+      description: Авторизованный пользователь
+      summary: Обновить пользователя
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this пользователь.
+        required: true
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: api_users_partial_update
+      description: Авторизованный пользователь
+      summary: Частичное обновление пользователя
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this пользователь.
+        required: true
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: api_users_destroy
+      description: Авторизованный пользователь
+      summary: Удалить пользователя
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this пользователь.
+        required: true
+      tags:
+      - Пользователь
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/activation/:
+    post:
+      operationId: api_users_activation_create
+      description: Авторизованный пользователь
+      summary: Активация аккаунта
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Activation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Activation'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activation'
+          description: ''
+  /api/users/me/:
+    get:
+      operationId: api_users_me_retrieve
+      description: Авторизованный пользователь
+      summary: Мой профиль
+      tags:
+      - Пользователь
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_users_me_update
+      description: Авторизованный пользователь
+      summary: Мой профиль
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: api_users_me_partial_update
+      description: Авторизованный пользователь
+      summary: Мой профиль
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: api_users_me_destroy
+      description: Авторизованный пользователь
+      summary: Мой профиль
+      tags:
+      - Пользователь
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/resend_activation/:
+    post:
+      operationId: api_users_resend_activation_create
+      description: Авторизованный пользователь
+      summary: Отправить повторное письмо активации
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /api/users/reset_password/:
+    post:
+      operationId: api_users_reset_password_create
+      description: Авторизованный пользователь
+      summary: Сбросить пароль
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /api/users/reset_password_confirm/:
+    post:
+      operationId: api_users_reset_password_confirm_create
+      description: Авторизованный пользователь
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetConfirm'
+          description: ''
+  /api/users/reset_username/:
+    post:
+      operationId: api_users_reset_username_create
+      description: Авторизованный пользователь
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailReset'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /api/users/reset_username_confirm/:
+    post:
+      operationId: api_users_reset_username_confirm_create
+      description: Авторизованный пользователь
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirm'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsernameResetConfirm'
+          description: ''
+  /api/users/set_password/:
+    post:
+      operationId: api_users_set_password_create
+      description: Авторизованный пользователь
+      summary: Сменить пароль
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetPassword'
+          description: ''
+  /api/users/set_username/:
+    post:
+      operationId: api_users_set_username_create
+      description: Авторизованный пользователь
+      tags:
+      - Пользователь
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetUsername'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetUsername'
+          description: ''
+components:
+  schemas:
+    Activation:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - token
+      - uid
+    Collect:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Название
+          maxLength: 200
+        first_name:
+          type: string
+          title: Имя
+          maxLength: 200
+        last_name:
+          type: string
+          title: Фамилия
+          maxLength: 200
+        occasion:
+          type: string
+          title: Повод
+          maxLength: 200
+        description:
+          type: string
+          title: Описание
+        target:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Цель
+        image:
+          type: string
+          format: uri
+          title: Изображение
+        collection_period:
+          type: string
+          format: date
+          title: Срок сбора
+        collection_tape:
+          type: string
+          readOnly: true
+        collected:
+          type: string
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+      required:
+      - author
+      - collected
+      - collection_period
+      - collection_tape
+      - description
+      - first_name
+      - id
+      - last_name
+      - name
+      - occasion
+    PasswordResetConfirm:
+      type: object
+      properties:
+        uid:
+          type: string
+        token:
+          type: string
+        new_password:
+          type: string
+      required:
+      - new_password
+      - token
+      - uid
+    PatchedCollect:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Название
+          maxLength: 200
+        first_name:
+          type: string
+          title: Имя
+          maxLength: 200
+        last_name:
+          type: string
+          title: Фамилия
+          maxLength: 200
+        occasion:
+          type: string
+          title: Повод
+          maxLength: 200
+        description:
+          type: string
+          title: Описание
+        target:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Цель
+        image:
+          type: string
+          format: uri
+          title: Изображение
+        collection_period:
+          type: string
+          format: date
+          title: Срок сбора
+        collection_tape:
+          type: string
+          readOnly: true
+        collected:
+          type: string
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+    PatchedUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          title: Адрес электронной почты
+          maxLength: 254
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        type_payment:
+          allOf:
+          - $ref: '#/components/schemas/TypePaymentEnum'
+          title: Тип пожертвования
+        sum_payment:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Сумма пожертвования
+        first_name:
+          type: string
+          title: Имя
+          maxLength: 200
+        last_name:
+          type: string
+          title: Фамилия
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        comment:
+          type: string
+          title: Комментарий
+        collect:
+          type: string
+          readOnly: true
+        pub_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - collect
+      - comment
+      - email
+      - first_name
+      - id
+      - last_name
+      - pub_date
+      - sum_payment
+      - type_payment
+    SendEmailReset:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    SetPassword:
+      type: object
+      properties:
+        new_password:
+          type: string
+        current_password:
+          type: string
+      required:
+      - current_password
+      - new_password
+    SetUsername:
+      type: object
+      properties:
+        current_password:
+          type: string
+        new_username:
+          type: string
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - current_password
+      - new_username
+    TokenCreate:
+      type: object
+      properties:
+        password:
+          type: string
+        username:
+          type: string
+    TypePaymentEnum:
+      enum:
+      - Единоразовое пожертвование
+      - Многоразовое пожертвование
+      type: string
+      description: |-
+        * `Единоразовое пожертвование` - Единоразовое пожертвование
+        * `Многоразовое пожертвование` - Многоразовое пожертвование
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          title: Адрес электронной почты
+          maxLength: 254
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+      required:
+      - id
+      - username
+    UserCreate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          title: Адрес электронной почты
+          maxLength: 254
+        username:
+          type: string
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        id:
+          type: integer
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - id
+      - password
+      - username
+    UsernameResetConfirm:
+      type: object
+      properties:
+        new_username:
+          type: string
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - new_username
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
